@@ -1,0 +1,34 @@
+name: Deploy Gradio to EC2
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Configure AWS
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Deploy via SSM
+      run: |
+        aws ssm send-command \
+          --instance-ids "${{ secrets.EC2_INSTANCE_ID }}" \
+          --document-name "AWS-RunShellScript" \
+          --comment "Deploy Gradio app" \
+          --parameters commands='[
+            "cd /opt/gradio-app || exit 1",
+            "git pull origin main || git clone https://github.com/robinhoed123/AWS.git .",
+            "source venv/bin/activate",
+            "pip install -r requirements.txt",
+            "sudo systemctl restart gradio"
+          ]'
