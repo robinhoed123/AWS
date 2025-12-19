@@ -26,9 +26,10 @@ jobs:
           --document-name "AWS-RunShellScript" \
           --comment "Deploy Gradio app" \
           --parameters commands='[
-            "cd /opt/gradio-app || exit 1",
-            "git pull origin main || git clone https://github.com/robinhoed123/AWS.git .",
-            "source venv/bin/activate",
-            "pip install -r requirements.txt",
+            "cd /opt/gradio-app || git clone https://github.com/robinhoed123/AWS.git .",
+            "git fetch origin main",
+            "git reset --hard origin/main",
+            "/opt/gradio-app/venv/bin/pip install -r requirements.txt",
             "sudo systemctl restart gradio"
           ]'
+    
