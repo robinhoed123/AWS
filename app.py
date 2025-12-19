@@ -4,7 +4,7 @@ import json
 import threading
 import webbrowser
 
-# --- CONFIGURATIE ---
+# CONFIGURATIE
 ENDPOINT_NAME = "mushroom-endpoint"
 REGION = "eu-west-1"               
 
@@ -14,7 +14,6 @@ sm_runtime = boto3.client("sagemaker-runtime", region_name=REGION)
 modelName = "AWS-SageMaker-RF"
 
 def query_endpoint(payload):
-    """Stuurt data naar SageMaker en ontvangt antwoord"""
     try:
         response = sm_runtime.invoke_endpoint(
             EndpointName=ENDPOINT_NAME,
@@ -57,18 +56,15 @@ def collect_data(cap_diameter, stem_height, stem_width, gill_spacing,
     if "error" in response_data:
         return f"System Error: {response_data['error']}"
 
-    # Parse het antwoord van de container
-    # formaat: {"prediction": "edible", "confidence": 95.5}
+    # krijg  het antwoord van de container
+    # formaat: {"prediction": "edible", "confidence": 42.5}
     pred = response_data.get("prediction", "Unknown")
     conf = response_data.get("confidence", 0.0)
-
-
-
     return f"This mushroom is : {pred}, Confidence: {conf}%"
 
 # --- GRADIO INTERFACE ---
 with gr.Blocks() as app:
-    gr.Markdown("# Mushroom Data Interface (hooplijk werkt dit !!!)")
+    gr.Markdown("# Mushroom Data Interface (voor laatste test !!!)")
     
     # SLIDERS
     cap_diameter = gr.Slider(0.38, 62.34, value=10.0, label="Cap diameter (cm)")
@@ -122,5 +118,4 @@ with gr.Blocks() as app:
     has_ring.change(fn=lambda x: gr.update(visible=x), inputs=has_ring, outputs=ring_type)
 
 if __name__ == "__main__":
-    threading.Timer(1, lambda: webbrowser.open("http://localhost:7860")).start()
     app.launch(server_name="0.0.0.0", server_port=7860)
