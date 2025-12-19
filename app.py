@@ -68,7 +68,7 @@ def collect_data(cap_diameter, stem_height, stem_width, gill_spacing,
 
 # --- GRADIO INTERFACE ---
 with gr.Blocks() as app:
-    gr.Markdown("# Mushroom Data Interface (hello World from git hub)")
+    gr.Markdown("# Mushroom Data Interface (hello grgWorld from git hub)")
     
     # SLIDERS
     cap_diameter = gr.Slider(0.38, 62.34, value=10.0, label="Cap diameter (cm)")
